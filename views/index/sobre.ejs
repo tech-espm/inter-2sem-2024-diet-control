@@ -1,14 +1,24 @@
 <div class="container-fluid">
-	<div class="row">
+	<div class="row mt-4 photo">
 		<div class="col-md-4">
-			<h1>Felipe Gudefin</h1>
+			<img src="/public/img/Felipe.png" alt="" style="width: 50%;"> 
+			<h3>Felipe Gudefin</h3>
 		</div>
-		<div class="col-md-4">
-			<h1>João Pedro Helbel</h1>
+		<div class="col-md-5">
+			<img src="/public/img/Joao.png" alt="" style="width: 40%;">
+			<h3>João Pedro Helbel</h3>
 		</div>
-		<div class="col-md-4">
-			<h1>Paulo Cesar</h1>
+		<div class="col-md-3">
+			<img src="/public/img/Paulo.png" alt="" style="width: 70%;">
+			<h3>Paulo Cesar</h3>
 		</div>
 	</div>
 
 </div>
+
+<%- contentFor("espaco-head") %>
+<style>
+.photo img{
+	border-radius: 50%;
+}
+</style>
