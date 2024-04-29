@@ -1,34 +1,40 @@
 <div class="container-fluid">
 	<div class="row mt-4 photo">
-		<div class="col-md-4">
-			<img class="person" src="/public/img/Felipe.png"> 
-			<h3>Felipe Gudefin</h3>
-			<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
-				Rerum accusamus hic natuss
+		<div class="col-md-3">
+			<div class="centro">
+				<img class="person" src="/public/img/Felipe.png">
+				<h3>Felipe Gudefin</h3>
+			</div>
+			<p>Lorem ipsum dolor, sit amet Rerum adipisicing elit.
+				accusamus hic natuss Lorem, ipsum dolor sit amet
 			</p>
 			<div class="row">
-				<a href=""><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
-				<a href=""><img class="icone" src="/public/img/Git.svg" alt=""></a>
+				<a href="https://www.linkedin.com/in/felipe-masetti-gudefin-2a9926259/?originalSubdomain=br"><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
+				<a href="https://github.com/gudefin1"><img class="icone" src="/public/img/Git.svg" alt=""></a>
 				<a href=""><img class="icone" src="/public/img/Globo.svg" alt=""></a>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<img class="person" src="/public/img/Joao.png" alt="">
-			<h3>João P Helbel</h3>
-			<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
-				Rerum accusamus hic natuss
+		<div class="col-md-3">
+			<div class="centro">
+				<img class="person" src="/public/img/Joao.png" alt="">
+				<h3>João P Helbel</h3>
+			</div>
+			<p>Lorem ipsum dolor, sit amet Rerum adipisicing elit.
+				accusamus hic natuss Lorem, ipsum dolor sit amet
 			</p>
 			<div class="row">
-				<a href=""><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
-				<a href=""><img class="icone" src="/public/img/Git.svg" alt=""></a>
-				<a href=""><img class="icone" src="/public/img/Globo.svg" alt=""></a>
+				<a href="https://www.linkedin.com/in/joaohelbel/"><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
+				<a href="https://github.com/joaohelbel"><img class="icone" src="/public/img/Git.svg" alt=""></a>
+				<a href="https://joaohelbel.github.io."><img class="icone" src="/public/img/Globo.svg" alt=""></a>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<img class="person" src="/public/img/Paulo.png" alt="">
-			<h3>Paulo Cesar</h3>
-			<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
-				Rerum accusamus hic natuss
+		<div class="col-md-3">
+			<div class="centro">
+				<img class="person" src="/public/img/Paulo.png" alt="">
+				<h3>Paulo Cesar</h3>
+			</div>
+			<p>Lorem ipsum dolor, sit amet Rerum adipisicing elit.
+				accusamus hic natuss Lorem, ipsum dolor sit amet
 			</p>
 			<div class="row">
 				<a href=""><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
@@ -41,15 +47,22 @@
 </div>
 
 <%- contentFor("espaco-head") %>
-<style>
-.person{
-	border-radius: 50%;
-	width: 180px;
-}
-.icone{
-	width: 24px;
-	height: 24px;
-	margin-left: 15px;
-}
+	<style>
+		.person {
+			border-radius: 50%;
+			width: 180px;
+		}
 
-</style>
+		.icone {
+			width: 24px;
+			height: 24px;
+			margin-left: 15px;
+		}
+
+		.centro {
+			text-align: center;
+		}
+		.photo{
+			justify-content: space-between;
+		}
+	</style>
