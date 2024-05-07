@@ -32,7 +32,17 @@ class IndexRoute {
 			valor: 100
 		};
 
-		let produtosVindosDoBanco = [ produtoA, produtoB, produtoC ];
+		let ProdutoD = {
+			id: 4,
+			nome: "Produto D",
+			Valor: 20
+		};
+		let ProdutoE = {
+			id: 5,
+			nome: "Produto E",
+			Valor: 20
+		};
+		let produtosVindosDoBanco = [ produtoA, produtoB, produtoC, ProdutoD, ProdutoE];
 
 		let opcoes = {
 			titulo: "Listagem de Produtos",
