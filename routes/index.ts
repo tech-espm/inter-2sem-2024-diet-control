@@ -13,42 +13,39 @@ class IndexRoute {
 		res.render("index/sobre", opcoes);
 	}
 
+	@app.http.post()
+	public async Lista(req: app.Request, res: app.Response) {
+		let produtos = req.body;
+
+		if(!produtos) {
+			res.status(400).send("Produto não informado");
+			return;
+		}
+		if(!produtos.nome) {
+			res.status(400).send("Nome do produto não informado");
+			return;
+		}
+		if(!produtos.quantidade) {
+			res.status(400).send("Quantidade do produto não informado");
+			return;
+		}
+		await app.sql.connect(async (sql) => {
+			await sql.query("INSERT INTO produtos (nome, quantidade) VALUES (?, ?)", [produtos.nome, produtos.quantidade]);
+		});
+		res.json(true);
+	}
+
 	public async produtos(req: app.Request, res: app.Response) {
-		let produtoA = {
-			id: 1,
-			nome: "Produto A",
-			valor: 25
-		};
+		let produtos: any[];
 
-		let produtoB = {
-			id: 2,
-			nome: "Produto B",
-			valor: 15
-		};
-
-		let produtoC = {
-			id: 3,
-			nome: "Produto C",
-			valor: 100
-		};
-
-		let ProdutoD = {
-			id: 4,
-			nome: "Produto D",
-			Valor: 20
-		};
-		let ProdutoE = {
-			id: 5,
-			nome: "Produto E",
-			Valor: 20
-		};
-		let produtosVindosDoBanco = [ produtoA, produtoB, produtoC, ProdutoD, ProdutoE];
+		await app.sql.connect(async (sql) => {
+			produtos = await sql.query("select id, nome, quantidade FROM produtos");
+		});
 
 		let opcoes = {
-			titulo: "Listagem de Produtos",
-			produtos: produtosVindosDoBanco
-		};
-
+			produtos: produtos
+		}
+		
 		res.render("index/produtos", opcoes);
 	}
 }

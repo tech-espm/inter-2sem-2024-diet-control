@@ -2,8 +2,71 @@
 
 	<h1>Sou a sua dispensa!</h1>
 
-	<p>Sua dispensa</p>
+	<div class="form-group" style="width: 300px;">
+		<label for="NomeAlimento">Insira seu alimento</label>
+		<input type="text" class="form-control mb-3" id="NomeAlimento" placeholder="Alimento">
+		<input type="number" class="form-control" id="QntAlimento" placeholder="Quantidade">
+		<button class="btn btn-primary mt-3" onclick="Lista()">Listar alimento</button>
+	</div>
 
+	<h3>Sua dispensa</h3>
 
+	<p>listagem de produtos (<%= produtos.length %>) produtos no total</p>
+
+	<% for (let contador = 0; contador < produtos.length; contador++) { %>
+
+		<h4><%= produtos[contador].nome %></h4>
+		
+		<p> id: <%= produtos[contador].id %></p>
+
+		<p>Qtd: <%= produtos[contador].quantidade %></p>
+
+		<hr>
+	<% } %>	
 
 </div>
+
+<script>
+
+	let nome = document.getElementById("NomeAlimento");
+	let qnt = document.getElementById("QntAlimento");
+
+	async function Lista(){
+		if(!nome.value){
+			alert("Nome do alimento é obrigatorio")
+			return;
+		}
+		if(!qnt.value){
+			alert("Quantidade é obrigatorio")
+			return;
+		}
+
+		let dadosPenvio = {
+			nome: nome.value,
+			quantidade: qnt.value
+		};
+
+		let opcoes = {
+			method: "POST",
+			headers: {
+				"content-type": "application/json"
+			},
+			body: JSON.stringify(dadosPenvio)
+		};
+		try{
+			let response = await fetch("/Lista", opcoes);
+
+			if(response.ok){
+				nome.value = "";
+				qnt.value = "";
+				
+				alert("Alimento listado com sucesso");
+			} else{
+				alert("Erro ao lista alimento");
+			}
+		} catch(ex){
+			alert("erro de rede");
+		}
+	}
+
+</script>
