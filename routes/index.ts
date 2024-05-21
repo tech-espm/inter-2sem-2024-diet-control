@@ -13,8 +13,35 @@ class IndexRoute {
 		res.render("index/sobre", opcoes);
 	}
 
+	public async produtos(req: app.Request, res: app.Response) {
+		res.render("index/produtos");
+	}
+
+	public async listar(req: app.Request, res: app.Response) {
+		let produtos: any[];
+
+		await app.sql.connect(async (sql) => {
+			produtos = await sql.query("select id, nome, quantidade FROM produtos order by nome asc");
+		});
+
+		res.json(produtos);
+	}
+
+	public async obter(req: app.Request, res: app.Response) {
+		let idtexto = req.query["id"] as string;
+		let id = parseInt(idtexto);
+
+		let produtos: any[];
+
+		await app.sql.connect(async (sql) => {
+			produtos = await sql.query("select id, nome, quantidade FROM produtos where id = ?", [id]);
+		});
+
+		res.json(produtos[0] || null);
+	}
+
 	@app.http.post()
-	public async Lista(req: app.Request, res: app.Response) {
+	public async criar(req: app.Request, res: app.Response) {
 		let produtos = req.body;
 
 		if(!produtos) {
@@ -35,19 +62,69 @@ class IndexRoute {
 		res.json(true);
 	}
 
-	public async produtos(req: app.Request, res: app.Response) {
-		let produtos: any[];
+	@app.http.post()
+	public async editar(req: app.Request, res: app.Response) {
+		let produto = req.body;
 
+		if(!produto.id){
+			res.status(400)
+			res.json("Id do produto não informado");
+			return;
+		}
+
+		if (!produto) {
+			res.status(400)
+			res.json("Produto não informado");
+			return;
+		}
+		if (!produto.nome) {
+			res.status(400)
+			res.json("Nome do produto não informado");
+			return;
+		}
+		if (!produto.quantidade) {
+			res.status(400)
+			res.json("Quantidade do produto não informado");
+			return;
+		}
+
+		
+		let linhasAlteradas = 0;
 		await app.sql.connect(async (sql) => {
-			produtos = await sql.query("select id, nome, quantidade FROM produtos");
+			await sql.query("UPDATE produtos SET nome = ?, quantidade = ? WHERE id = ?", [produto.nome, produto.quantidade, produto.id]);
+			linhasAlteradas = sql.affectedRows;
 		});
+		if (!linhasAlteradas) {
+			res.status(404)
+			res.json("Produto não encontrado");
+			return;
+		}
+		res.json(true);
+	}
 
-		let opcoes = {
-			produtos: produtos
+	@app.http.delete()
+	public async excluir(req: app.Request, res: app.Response) {
+		let idtexto = req.query["id"] as string;
+		let id = parseInt(idtexto);
+
+		if(isNaN(id)) {
+			res.status(400).send("Id inválido");
+			return;
 		}
 		
-		res.render("index/produtos", opcoes);
-	}
+		let linhasAfetadas = 0;
+
+		await app.sql.connect(async (sql) => {
+			await sql.query("DELETE FROM produtos WHERE id = ?", [id]);
+			linhasAfetadas = sql.affectedRows;	
+		});
+		if (!linhasAfetadas) {
+			res.status(404)
+			res.json("Produto não encontrado");
+			return;
+		}
+		res.json(true);
+	}	
 }
 
 export = IndexRoute;

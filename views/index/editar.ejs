@@ -1,0 +1,65 @@
+<input type="hidden" id="id" name="id" value="<%= produto.id %>" />
+
+<div class="form-group">
+	<label for="NomeAlimento">Nome</label>
+	<input class="form-control" type="text" id="NomeAlimento" name="nome" maxlength="50" value="<%= produto.nome %>" />
+</div>
+
+<div class="form-group">
+	<label for="QntAlimento">quantidade</label>
+	<input class="form-control" type="number" name="quantidade" id="QntAlimento" maxlength="50" value="<%= produto.quantidade %>" />
+</div>
+
+<div>
+	<button class="btn btn-primary" type="button" onclick="editarProd()">Alterar Alimento</button>
+</div>
+
+<script>
+
+	let id = document.getElementById("id").value;
+	let nome = document.getElementById("NomeAlimento");
+	let quantidade = document.getElementById("QntAlimento");
+	
+    
+    async function editarProd(){
+		if (!nome.value) {
+			alert("O nome é obrigatório");
+			return;
+		}
+
+		if (!quantidade.value) {
+			alert("Quantidade é obrigatório");
+			return;
+		}
+		let DadosPaEnvio = {
+			id: id,
+			nome: nome.value,
+			quantidade: quantidade.value
+		};
+		let opcoes = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(DadosPaEnvio)
+		};
+		
+
+		try{
+			let response = await fetch("/editar", opcoes);
+
+			if(response.ok){
+				alert("Alimento alterado com sucesso")
+			} else {
+				alert("erro ao alterar o alimento")
+			}
+		} catch (ex) {
+			alert("Erro de rede: " + ex.message);
+		}
+
+	}
+	
+	
+
+
+</script>

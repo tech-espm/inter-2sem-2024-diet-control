@@ -6,24 +6,32 @@
 		<label for="NomeAlimento">Insira seu alimento</label>
 		<input type="text" class="form-control mb-3" id="NomeAlimento" placeholder="Alimento">
 		<input type="number" class="form-control" id="QntAlimento" placeholder="Quantidade">
-		<button class="btn btn-primary mt-3" onclick="Lista()">Listar alimento</button>
+		<button class="btn btn-primary mt-3" onclick="criar()">Criar Alimento</button>
 	</div>
 
-	<h3>Sua dispensa</h3>
 
-	<p>listagem de produtos (<%= produtos.length %>) produtos no total</p>
+	<h3>Sua Dispensa</h3>
 
-	<% for (let contador = 0; contador < produtos.length; contador++) { %>
+	<div id="divContainer"></div>
+</div>
 
-		<h4><%= produtos[contador].nome %></h4>
-		
-		<p> id: <%= produtos[contador].id %></p>
-
-		<p>Qtd: <%= produtos[contador].quantidade %></p>
-
-		<hr>
-	<% } %>	
-
+<div class="modal" tabindex="-1" id="modalEditar">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Editar Alimento</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary">Salvar</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
@@ -31,12 +39,62 @@
 	let nome = document.getElementById("NomeAlimento");
 	let qnt = document.getElementById("QntAlimento");
 
-	async function Lista(){
-		if(!nome.value){
+	window.encode = (function () {
+		const amp = /\&/g, lt = /</g, gt = />/g, quot = /\"/g, apos = /\'/g, grave = /\`/g;
+		window.encodeValue = function (x) {
+			return (x ? x.replace(amp, "&amp;").replace(lt, "&lt;").replace(gt, "&gt;").replace(quot, "&#34;").replace(apos, "&#39;").replace(grave, "&#96;") : "");
+		};
+		return function (x) {
+			return (x ? x.replace(amp, "&amp;").replace(lt, "&lt;").replace(gt, "&gt;") : "");
+		};
+	})();
+
+	async function listar() {
+		let divContainer = document.getElementById("divContainer");
+
+		let response = await fetch("/listar");
+		let produtos = await response.json();
+
+		let html = `<p>listagem de produtos (${produtos.length} produtos no total)</p>`;
+
+		for (let contador = 0; contador < produtos.length; contador++) {
+			html += `
+				<h4>
+					${encode(produtos[contador].nome)}
+				</h4>
+	
+				<p>
+					Id: ${produtos[contador].id}
+				</p>
+	
+				<p>
+					Qtd: ${produtos[contador].quantidade}
+				</p>
+	
+				<p>
+					<button type="button" class="btn btn-primary" onclick="abrirModal(${produtos[contador].id})">
+						Editar Produto
+					</button>
+				</p>
+	
+				<button class="btn btn-primary" type="button" onclick="excluirProduto(${produtos[contador].id})">
+					Excluir Produto
+				</button>
+	
+				<hr>
+			</div>
+			`;
+		}
+
+		divContainer.innerHTML = html;
+	}
+
+	async function criar() {
+		if (!nome.value) {
 			alert("Nome do alimento é obrigatorio")
 			return;
 		}
-		if(!qnt.value){
+		if (!qnt.value) {
 			alert("Quantidade é obrigatorio")
 			return;
 		}
@@ -53,20 +111,60 @@
 			},
 			body: JSON.stringify(dadosPenvio)
 		};
-		try{
-			let response = await fetch("/Lista", opcoes);
+		try {
+			let response = await fetch("/criar", opcoes);
 
-			if(response.ok){
+			if (response.ok) {
 				nome.value = "";
 				qnt.value = "";
-				
-				alert("Alimento listado com sucesso");
-			} else{
-				alert("Erro ao lista alimento");
+
+				await listar();
+
+				alert("Alimento criado com sucesso");
+			} else {
+				alert("Erro ao criar alimento");
 			}
-		} catch(ex){
+		} catch (ex) {
 			alert("erro de rede");
 		}
 	}
+
+	async function abrirModal(id) {
+		try {
+			let response = await fetch("/obter?id=" + encodeURIComponent(id));
+			let alimento = await response.json();
+			if (response.ok) {
+				$("#modalEditar").modal("show");
+			} else {
+				alert("Erro ao obter o alimento");
+			}
+		} catch (ex) {
+			alert("erro de rede");
+		}
+	}
+
+	async function excluirProduto(id) {
+		if (!confirm("Deseja realmente excluir o produto?")) {
+			return;
+		}
+		let opcoes = {
+			method: "DELETE"
+		};
+
+		try {
+			let response = await fetch("/excluir?id=" + id, opcoes);
+			if (response.ok) {
+				alert("Produto excluído com sucesso");
+				let divProdutos = document.getElementById("divProdutos" + id);
+				document.body.removeAttribute(divProdutos);
+			} else {
+				alert("Erro ao excluir o produto");
+			}
+		} catch (ex) {
+			alert("Erro de rede: " + ex.message);
+		}
+	}
+
+	listar();
 
 </script>
