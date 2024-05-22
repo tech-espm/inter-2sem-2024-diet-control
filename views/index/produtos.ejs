@@ -25,10 +25,20 @@
 				</button>
 			</div>
 			<div class="modal-body">
+				<input type="hidden" id="idAlimento" name="id" />
+				<div class="form-group">
+					<label for="NomeAlimento">Nome</label>
+					<input class="form-control" type="text" id="EditNome" name="EditNome" maxlength="50" />
+				</div>
+
+				<div class="form-group">
+					<label for="QntAlimento">quantidade</label>
+					<input class="form-control" type="number" name="quantidade" id="EditQntAlimento" maxlength="50" />
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary">Salvar</button>
+				<button type="button" class="btn btn-primary" onclick="editarProduto('idAlimento').value">Salvar</button>
 			</div>
 		</div>
 	</div>
@@ -167,4 +177,46 @@
 
 	listar();
 
+	async function editarProduto(id){
+		let idAlimento = document.getElementById("idAlimento");
+		let nome = document.getElementById("EditNome");
+		let quantidade = document.getElementById("EditQntAlimento");
+
+		if (!nome) {
+			alert("O nome é obrigatório");
+			return;
+		}
+
+		if (!quantidade.value) {
+			alert("Quantidade é obrigatório");
+			return;
+		}
+
+		let dadosPenvio = {
+			nome: nome.value,
+			quantidade: quantidade.value
+		};
+
+		let opcoes = {
+			method: "POST",
+			headers: {
+				"content-type": "application/json"
+			},
+			body: JSON.stringify(dadosPenvio)
+		};
+
+		try {
+			let response = await fetch("/editar", opcoes);
+
+			if (response.ok) {
+				$("#modalEditar").modal("hide");
+				await listar();
+				alert("Alimento alterado com sucesso");
+			} else {
+				alert("Erro ao alterar o alimento");
+			}
+		} catch (ex) {
+			alert("Erro de rede: " + ex.message);
+		}
+	}
 </script>

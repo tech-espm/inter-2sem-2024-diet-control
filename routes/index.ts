@@ -65,6 +65,12 @@ class IndexRoute {
 	@app.http.post()
 	public async editar(req: app.Request, res: app.Response) {
 		let produto = req.body;
+		
+		if (!produto) {
+			res.status(400)
+			res.json("Produto não informado");
+			return;
+		}
 
 		if(!produto.id){
 			res.status(400)
@@ -72,11 +78,7 @@ class IndexRoute {
 			return;
 		}
 
-		if (!produto) {
-			res.status(400)
-			res.json("Produto não informado");
-			return;
-		}
+		
 		if (!produto.nome) {
 			res.status(400)
 			res.json("Nome do produto não informado");
