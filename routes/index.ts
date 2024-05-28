@@ -14,7 +14,14 @@ class IndexRoute {
 	}
 
 	public async produtos(req: app.Request, res: app.Response) {
-		res.render("index/produtos");
+		let nome = req.query["nome"] as string || "";
+
+		let opcoes = {
+			titulo: "Produtos",
+			nome: nome
+		};
+
+		res.render("index/produtos", opcoes);
 	}
 
 	public async listar(req: app.Request, res: app.Response) {
@@ -25,6 +32,21 @@ class IndexRoute {
 		});
 
 		res.json(produtos);
+	}
+
+	public async consulta(req: app.Request, res: app.Response) {
+		let produtos: any[];
+
+		await app.sql.connect(async (sql) => {
+			produtos = await sql.query("select categoria, descricaoAlimento, energiaKcal, proteina, carboidrato, fibraAlimentar from cmvcoltaco3");
+		});
+
+		let opcoes = {
+			titulo: "Consulta",
+			produtos: produtos
+		};
+
+		res.render("index/consulta", opcoes);
 	}
 
 	public async obter(req: app.Request, res: app.Response) {

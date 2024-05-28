@@ -4,7 +4,7 @@
 
 	<div class="form-group" style="width: 300px;">
 		<label for="NomeAlimento">Insira seu alimento</label>
-		<input type="text" class="form-control mb-3" id="NomeAlimento" placeholder="Alimento">
+		<input type="text" class="form-control mb-3" id="NomeAlimento" placeholder="Alimento" value="<%= nome %>">
 		<input type="number" class="form-control" id="QntAlimento" placeholder="Quantidade">
 		<button class="btn btn-primary mt-3" onclick="criar()">Criar Alimento</button>
 	</div>
@@ -50,16 +50,6 @@
 	let nome = document.getElementById("NomeAlimento");
 	let qnt = document.getElementById("QntAlimento");
 
-	window.encode = (function () {
-		const amp = /\&/g, lt = /</g, gt = />/g, quot = /\"/g, apos = /\'/g, grave = /\`/g;
-		window.encodeValue = function (x) {
-			return (x ? x.replace(amp, "&amp;").replace(lt, "&lt;").replace(gt, "&gt;").replace(quot, "&#34;").replace(apos, "&#39;").replace(grave, "&#96;") : "");
-		};
-		return function (x) {
-			return (x ? x.replace(amp, "&amp;").replace(lt, "&lt;").replace(gt, "&gt;") : "");
-		};
-	})();
-
 	async function listar() {
 		let divContainer = document.getElementById("divContainer");
 
@@ -88,7 +78,7 @@
 					</button>
 				</p>
 	
-				<button class="btn btn-primary" type="button" onclick="excluirProduto(${produtos[contador].id})">
+				<button class="btn btn-danger" type="button" onclick="excluirProduto(${produtos[contador].id})">
 					Excluir Produto
 				</button>
 	
@@ -145,8 +135,10 @@
 			let response = await fetch("/obter?id=" + encodeURIComponent(id));
 			let alimento = await response.json();
 			if (response.ok) {
-				$("#modalEditar").modal("show");
 				document.getElementById("idAlimento").value = id;
+				document.getElementById("EditNome").value = alimento.nome;
+				document.getElementById("EditQntAlimento").value = alimento.quantidade;
+				$("#modalEditar").modal("show");
 			} else {
 				alert("Erro ao obter o alimento");
 			}
@@ -182,8 +174,8 @@
 
 	async function editarProduto(){
 		let id = document.getElementById("idAlimento").value;
-		let nome = document.getElementById("EditNome");
-		let quantidade = document.getElementById("EditQntAlimento");
+		let nome = document.getElementById("EditNome").value;
+		let quantidade = document.getElementById("EditQntAlimento").value;
 
 		if (!id) {
 			alert("O id é obrigatório");
@@ -195,15 +187,15 @@
 			return;
 		}
 
-		if (!quantidade.value) {
+		if (!quantidade) {
 			alert("Quantidade é obrigatório");
 			return;
 		}
 
 		let dadosPenvio = {
 			id: id,
-			nome: nome.value,
-			quantidade: quantidade.value
+			nome: nome,
+			quantidade: quantidade
 		};
 
 		let opcoes = {

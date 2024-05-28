@@ -1,0 +1,77 @@
+<div class="container-fluid">
+	<h1>
+		Consulta
+	</h1>
+
+	<!--
+		O motivo do width: 100% ;)
+
+		https://datatables.net/examples/basic_init/flexible_width.html
+	-->
+	<table id="tabela" class="table table-flush table-striped table-hover" style="width: 100%;"></table>
+</div>
+
+<%- contentFor("espaco-head") %>
+
+<!--
+    DataTables
+
+    https://datatables.net/
+    https://datatables.net/download/index
+    https://datatables.net/examples/index
+    https://datatables.net/manual/
+-->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+
+<%- contentFor("espaco-rodape") %>
+
+<!--
+	DataTables
+
+	https://datatables.net/
+	https://datatables.net/download/index
+	https://datatables.net/examples/index
+	https://datatables.net/manual/
+-->
+<script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
+
+<script type="text/javascript">
+
+	// Estamos transformando a lista de pessoas em uma string JSON
+	// para que o browser tenha acesso à lista original. Veja o
+	// código da página no browser. ;)
+	let produtos = <%- JSON.stringify(produtos) %>;
+
+	// Existe uma INFINIDADE de opções para configurar uma DataTable!!!
+	$("#tabela").DataTable({
+		// Ordena os registros inicialmente pela segunda coluna
+		order: [[1, "asc"]],
+
+		width: "100%",
+
+		language: {
+			// Traduções
+			// https://datatables.net/plug-ins/i18n/
+			// https://datatables.net/plug-ins/i18n/Portuguese-Brasil.html
+            url: "https://cdn.datatables.net/plug-ins/1.11.3/i18n/pt_br.json"
+        },
+
+		// https://datatables.net/reference/option/deferRender
+		deferRender: true,
+
+		// https://datatables.net/reference/option/columns
+		columns: [
+			//{ title: "Id", type: "num", data: "id" },
+            { title: "Categoria", render: encode, data: "categoria" },
+            { title: "Descrição", render: encode, data: "descricaoAlimento" },
+            { title: "Energia (kcal)", render: encode, data: "energiaKcal" },
+            { title: "Proteína (g)", render: encode, data: "proteina" },
+            { title: "Carboidrato (g)", render: encode, data: "carboidrato" },
+            { title: "Fibra Alimentar (g)", render: function (value) {
+                return `${encode(value)} <a href="/produtos?nome=${encodeURIComponent(value)}">Criar</a>`;
+            }, data: "fibraAlimentar" },
+        ],
+
+		data: produtos
+	});
+</script>
