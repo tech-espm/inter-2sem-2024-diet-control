@@ -63,13 +63,13 @@
 		columns: [
 			//{ title: "Id", type: "num", data: "id" },
             { title: "Categoria", render: encode, data: "categoria" },
-            { title: "Descrição", render: encode, data: "descricaoAlimento" },
+            { title: "Descrição",  render: function (value){
+				return `${encode(value)} <a href="/produtos?nome=${encodeURIComponent(value)}">Add</a>`;
+			}, data: "descricaoAlimento" },
             { title: "Energia (kcal)", render: encode, data: "energiaKcal" },
             { title: "Proteína (g)", render: encode, data: "proteina" },
             { title: "Carboidrato (g)", render: encode, data: "carboidrato" },
-            { title: "Fibra Alimentar (g)", render: function (value) {
-                return `${encode(value)} <a href="/produtos?nome=${encodeURIComponent(value)}">Criar</a>`;
-            }, data: "fibraAlimentar" },
+            { title: "Fibra Alimentar (g)",ender: encode, data: "fibraAlimentar" },
         ],
 
 		data: produtos
