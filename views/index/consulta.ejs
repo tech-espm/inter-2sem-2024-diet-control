@@ -25,19 +25,19 @@
 
 <style type="text/css">
 	.table-striped tbody tr:nth-of-type(odd) {
-		background-color: lime;
+		background-color: #EAC784;
 	}
 
 	.table-striped tbody tr:nth-of-type(odd):hover {
-		background-color: green;
+		background-color: #e4b96b;
 	}
 
 	.even {
-		background-color: magenta;
+		background-color: #FFFCFC;
 	}
 
 	.table-hover tbody tr.even:hover {
-		background-color: purple;
+		background-color: #f2f0f0;
 	}
 </style>
 
@@ -123,7 +123,7 @@
 			//{ title: "Id", type: "num", data: "id" },
 			{ title: "Categoria", render: encode, data: "categoria" },
 			{ title: "Descrição",  render: function (value){
-				return `${encode(value)} <a href="/produtos?nome=${encodeURIComponent(value)}">Add</a>`;
+				return `${encode(value)} <br> <a class="buttonAdd" href="/produtos?nome=${encodeURIComponent(value)}">Add</a>`;
 			}, data: "descricaoAlimento" },
 			{ title: "Energia (kcal)", type: "num", data: campoFloat("energiaKcal") },
 			{ title: "Proteína (g)", type: "num", data: campoFloat("proteina") },
@@ -147,3 +147,13 @@
 	ajustarDataTable("tabela");
 
 </script>
+
+<style>
+	.buttonAdd {
+		background-color: #004828;
+		color: white;
+		padding: 5px;
+		border-radius: 5px;
+		text-decoration: none;
+	}
+</style>
