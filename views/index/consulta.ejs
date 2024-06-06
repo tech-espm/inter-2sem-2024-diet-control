@@ -23,6 +23,24 @@
 -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
 
+<style type="text/css">
+	.table-striped tbody tr:nth-of-type(odd) {
+		background-color: lime;
+	}
+
+	.table-striped tbody tr:nth-of-type(odd):hover {
+		background-color: green;
+	}
+
+	.even {
+		background-color: magenta;
+	}
+
+	.table-hover tbody tr.even:hover {
+		background-color: purple;
+	}
+</style>
+
 <%- contentFor("espaco-rodape") %>
 
 <!--
@@ -42,6 +60,24 @@
 	// código da página no browser. ;)
 	let produtos = <%- JSON.stringify(produtos) %>;
 
+	function formatarCampoFloat(campo) {
+		return function (row) {
+			let x = row[campo];
+			if (x === null) {
+				return null;
+			}
+			return x.toFixed(2).replace(".", ",");
+		};
+	}
+
+	function campoFloat(campo) {
+		return {
+			_: formatarCampoFloat(campo),
+			type: campo,
+			sort: campo
+		};
+	}
+
 	// Existe uma INFINIDADE de opções para configurar uma DataTable!!!
 	$("#tabela").DataTable({
 		// Ordena os registros inicialmente pela segunda coluna
@@ -50,11 +86,34 @@
 		width: "100%",
 
 		language: {
+			emptyTable: "Nada para exibir \uD83D\uDE22",
+			info: "Exibindo itens _START_ até _END_ de _TOTAL_",
+			infoEmpty: "Exibindo 0 itens",
+			infoFiltered: "(filtrado de _MAX_ itens no total)",
+			infoPostFix: "",
+			thousands: ".",
+			lengthMenu: "Exibir _MENU_ itens por página",
+			loadingRecords: "Carregando...",
+			processing: "Processando...",
+			search: "Filtro:",
+			zeroRecords: "O filtro não retornou resultados \uD83D\uDE22",
+			paginate: {
+				first: "Primeira",
+				last: "Última",
+				previous: "&lt;",
+				next: "&gt;"
+			},
+			aria: {
+				sortAscending: ": clique para ordenar de modo crescente",
+				sortDescending: ": clique para ordenar de modo decrescente"
+			}
+		},
+		//{
 			// Traduções
 			// https://datatables.net/plug-ins/i18n/
 			// https://datatables.net/plug-ins/i18n/Portuguese-Brasil.html
-            url: "https://cdn.datatables.net/plug-ins/1.11.3/i18n/pt_br.json"
-        },
+			//url: "https://cdn.datatables.net/plug-ins/1.11.3/i18n/pt_br.json"
+		//},
 
 		// https://datatables.net/reference/option/deferRender
 		deferRender: true,
@@ -62,16 +121,29 @@
 		// https://datatables.net/reference/option/columns
 		columns: [
 			//{ title: "Id", type: "num", data: "id" },
-            { title: "Categoria", render: encode, data: "categoria" },
-            { title: "Descrição",  render: function (value){
+			{ title: "Categoria", render: encode, data: "categoria" },
+			{ title: "Descrição",  render: function (value){
 				return `${encode(value)} <a href="/produtos?nome=${encodeURIComponent(value)}">Add</a>`;
 			}, data: "descricaoAlimento" },
-            { title: "Energia (kcal)", render: encode, data: "energiaKcal" },
-            { title: "Proteína (g)", render: encode, data: "proteina" },
-            { title: "Carboidrato (g)", render: encode, data: "carboidrato" },
-            { title: "Fibra Alimentar (g)",ender: encode, data: "fibraAlimentar" },
-        ],
+			{ title: "Energia (kcal)", type: "num", data: campoFloat("energiaKcal") },
+			{ title: "Proteína (g)", type: "num", data: campoFloat("proteina") },
+			{ title: "Carboidrato (g)", type: "num", data: campoFloat("carboidrato") },
+			{ title: "Fibra Alimentar (g)", type: "num", data: campoFloat("fibraAlimentar") },
+		],
 
 		data: produtos
 	});
+
+	function ajustarDataTable(id) {
+		let tabela = document.getElementById(id);
+		let pai = tabela.parentNode;
+		let novoPai = document.createElement("div");
+		novoPai.style.overflow = "auto";
+		pai.insertBefore(novoPai, tabela);
+		pai.removeChild(tabela);
+		novoPai.appendChild(tabela);
+	}
+
+	ajustarDataTable("tabela");
+
 </script>
