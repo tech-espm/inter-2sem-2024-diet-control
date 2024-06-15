@@ -5,6 +5,7 @@ img {
 html, body {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	min-height: 100vh;
+	
 }
 
 .limitador {
