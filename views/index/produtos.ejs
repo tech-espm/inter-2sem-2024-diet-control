@@ -1,18 +1,25 @@
-<div class="container-fluid">
-
-	<h1>Sou a sua dispensa!</h1>
-
-	<div class="form-group" style="width: 300px;">
-		<label for="NomeAlimento">Insira seu alimento</label>
-		<input type="text" class="form-control mb-3" id="NomeAlimento" placeholder="Alimento" value="<%= nome %>">
-		<input type="number" class="form-control" id="QntAlimento" placeholder="Quantidade">
-		<button class="btn btn-primary mt-3" onclick="criar()">Criar Alimento</button>
+<div class="container-fluid desp">
+	<h1>Insira seus alimentos aqui!</h1>
+	<div class="row justify-content-around inserir">
+		<div class="form-group" style="width: 700px;">
+			<label for="NomeAlimento">Nome:</label>
+			<input type="text" class="form-control mb-3" id="NomeAlimento" placeholder="Nome do Alimento"
+				value="<%= nome %>">
+			<label for="QntAlimento">Quantidade:</label>
+			<input type="number" class="form-control mb-3" id="QntAlimento" placeholder="Quantidade">
+			<label for="ValidadeAlimento">Validade:</label>
+			<input type="date" class="form-control mb-3" id="ValidadeAlimento">
+			<button class="btn btn-primary mt-3" style="background-color: #004828;" onclick="criar()">Criar Alimento</button>
+			
+		</div>
+		<div class="image-container">
+			<img src="/public/img/dsp.png" alt="Despensa" height="400px">
+		</div>	
 	</div>
+	
 
-
-	<h3>Sua Dispensa</h3>
-
-	<div id="divContainer"></div>
+	<h1 class="desp">Minha Despensa</h1>
+	<div class="row justify-content-center" id="divContainer" data-aos="fade-up"></div>
 </div>
 
 <div class="modal" tabindex="-1" id="modalEditar">
@@ -26,15 +33,17 @@
 			</div>
 			<div class="modal-body">
 				<input type="hidden" id="idAlimento">
-				
 				<div class="form-group">
-					<label for="NomeAlimento">Nome</label>
-					<input class="form-control" type="text" id="EditNome" maxlength="50" />
+					<label for="EditNome">Nome</label>
+					<input class="form-control" type="text" id="EditNome">
 				</div>
-
 				<div class="form-group">
-					<label for="QntAlimento">quantidade</label>
-					<input class="form-control" type="number" name="quantidade" id="EditQntAlimento" maxlength="50" />
+					<label for="EditQntAlimento">Quantidade</label>
+					<input class="form-control" type="number" id="EditQntAlimento">
+				</div>
+				<div class="form-group">
+					<label for="EditValidade">Validade</label>
+					<input class="form-control" type="date" id="EditValidade">
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -45,178 +54,238 @@
 	</div>
 </div>
 
-<script>
 
+
+<script>
 	let nome = document.getElementById("NomeAlimento");
 	let qnt = document.getElementById("QntAlimento");
+	let validade = document.getElementById("ValidadeAlimento");
 
 	async function listar() {
 		let divContainer = document.getElementById("divContainer");
 
-		let response = await fetch("/listar");
-		let produtos = await response.json();
 
-		let html = `<p>listagem de produtos (${produtos.length} produtos no total)</p>`;
+		try {
 
-		for (let contador = 0; contador < produtos.length; contador++) {
-			html += `
-				<h4>
-					${encode(produtos[contador].nome)}
-				</h4>
-	
-				<p>
-					Id: ${produtos[contador].id}
-				</p>
-	
-				<p>
-					Qtd: ${produtos[contador].quantidade}
-				</p>
-	
-				<p>
-					<button type="button" class="btn btn-primary" onclick="abrirModal(${produtos[contador].id})">
-						Editar Produto
-					</button>
-				</p>
-	
-				<button class="btn btn-danger" type="button" onclick="excluirProduto(${produtos[contador].id})">
-					Excluir Produto
-				</button>
-	
-				<hr>
-			</div>
-			`;
+			let response = await fetch("/listar");
+			if (!response.ok) {
+				throw new Error("Erro ao listar produtos");
+			}
+
+			let produtos = await response.json();
+
+
+			let html = ``;
+
+			produtos.forEach(produto => {
+				html += `
+					<div class="col-md-4 mx-1 despensa">
+						<h4>${encode(produto.nome)}</h4>
+						<p>Quantidade: ${produto.quantidade}</p>
+						<p>Validade: ${produto.validade}</p>
+						<button type="button" style="background-color: #004828" class="btn btn-primary" onclick="abrirModal(${produto.id})">Editar Produto</button>
+						<button class="btn btn-danger" type="button" onclick="excluirProduto(${produto.id})">Excluir Produto</button>
+						<hr>
+					</div>
+				`;
+			});
+
+			divContainer.innerHTML = html;
+		} catch (error) {
+			console.error("Erro ao listar produtos:", error.message);
+			Swal.fire("Erro", "Erro ao listar produtos", "error");
 		}
-
-		divContainer.innerHTML = html;
 	}
 
 	async function criar() {
-		if (!nome.value) {
-			alert("Nome do alimento é obrigatorio")
-			return;
-		}
-		if (!qnt.value) {
-			alert("Quantidade é obrigatorio")
-			return;
-		}
-
-		let dadosPenvio = {
-			nome: nome.value,
-			quantidade: qnt.value
-		};
-
-		let opcoes = {
-			method: "POST",
-			headers: {
-				"content-type": "application/json"
-			},
-			body: JSON.stringify(dadosPenvio)
-		};
 		try {
-			let response = await fetch("/criar", opcoes);
-
-			if (response.ok) {
-				nome.value = "";
-				qnt.value = "";
-
-				await listar();
-
-				alert("Alimento criado com sucesso");
-			} else {
-				alert("Erro ao criar alimento");
+			if (!nome.value || !qnt.value || !validade.value) {
+				Swal.fire("Atenção", "Todos os campos são obrigatórios", "warning");
+				return;
 			}
-		} catch (ex) {
-			alert("erro de rede");
+
+			let dadosPenvio = {
+				nome: nome.value,
+				quantidade: qnt.value,
+				validade: validade.value
+			};
+
+			let response = await fetch("/criar", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(dadosPenvio)
+			});
+
+			if (!response.ok) {
+				throw new Error("Erro ao criar alimento");
+			}
+
+			nome.value = "";
+			qnt.value = "";
+			validade.value = "";
+
+			await listar();
+
+			Swal.fire("Sucesso", "Alimento criado com sucesso", "success");
+		} catch (error) {
+			console.error("Erro ao criar alimento:", error.message);
+			Swal.fire("Erro", "Erro ao criar alimento", "error");
 		}
 	}
 
 	async function abrirModal(id) {
 		try {
-			let response = await fetch("/obter?id=" + encodeURIComponent(id));
-			let alimento = await response.json();
-			if (response.ok) {
-				document.getElementById("idAlimento").value = id;
-				document.getElementById("EditNome").value = alimento.nome;
-				document.getElementById("EditQntAlimento").value = alimento.quantidade;
-				$("#modalEditar").modal("show");
-			} else {
-				alert("Erro ao obter o alimento");
+			let response = await fetch(`/obter?id=${id}`);
+			if (!response.ok) {
+				throw new Error("Erro ao obter produto");
 			}
-		} catch (ex) {
-			alert("erro de rede");
+			let produto = await response.json();
+
+			document.getElementById("idAlimento").value = produto.id;
+			document.getElementById("EditNome").value = produto.nome;
+			document.getElementById("EditQntAlimento").value = produto.quantidade;
+			document.getElementById("EditValidade").value = produto.validade;
+
+			$("#modalEditar").modal("show");
+		} catch (error) {
+			console.error("Erro ao abrir modal de edição:", error.message);
+			Swal.fire("Erro", "Erro ao abrir modal de edição", "error");
 		}
 	}
 
-	async function excluirProduto(id) {
-		if (!confirm("Deseja realmente excluir o produto?")) {
-			return;
-		}
-		let opcoes = {
-			method: "DELETE"
-		};
-
+	async function editarProduto() {
 		try {
-			let response = await fetch("/excluir?id=" + id, opcoes);
-			if (response.ok) {
-				alert("Produto excluído com sucesso");
-				await listar();
-				let divProdutos = document.getElementById("divProdutos" + id);
-				document.body.removeAttribute(divProdutos);
-			} else {
-				alert("Erro ao excluir o produto");
+			let id = document.getElementById("idAlimento").value;
+			let nome = document.getElementById("EditNome").value;
+			let quantidade = document.getElementById("EditQntAlimento").value;
+			let validade = document.getElementById("EditValidade").value;
+
+			if (!id || !nome || !quantidade || !validade) {
+				Swal.fire("Atenção", "Todos os campos são obrigatórios", "warning");
+				return;
 			}
-		} catch (ex) {
-			alert("Erro de rede: " + ex.message);
+
+			let dadosPenvio = {
+				id: id,
+				nome: nome,
+				quantidade: quantidade,
+				validade: validade
+			};
+
+			let response = await fetch("/editar", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(dadosPenvio)
+			});
+
+			if (!response.ok) {
+				throw new Error("Erro ao editar alimento");
+			}
+
+			$("#modalEditar").modal("hide");
+			await listar();
+
+			Swal.fire("Sucesso", "Alimento editado com sucesso", "success");
+		} catch (error) {
+			console.error("Erro ao editar alimento:", error.message);
+			Swal.fire("Erro", "Erro ao editar alimento", "error");
 		}
+	}
+	async function excluirProduto(id) {
+		try {
+			// Exibe o primeiro alerta de confirmação
+			const result = await Swal.fire({
+				title: "Você tem certeza?",
+				text: "Essa ação não pode ser revertida!",
+				icon: "warning",
+				showCancelButton: true,
+				cancelButtonText: "Cancelar",
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "Sim, exclua!"
+			});
+
+			if (result.isConfirmed) {
+				// Se confirmado, exibe o alerta de excluído
+				await Swal.fire({
+					title: "Excluído!",
+					text: "Seu arquivo foi excluído.",
+					icon: "success"
+				});
+
+				// Faz a requisição para excluir o produto
+				let response = await fetch(`/excluir?id=${id}`, {
+					method: "DELETE"
+				});
+
+				if (!response.ok) {
+					throw new Error("Erro ao excluir produto");
+				}
+
+				await listar();
+
+				Swal.fire("Sucesso", "Produto excluído com sucesso", "success");
+			} else {
+				Swal.fire("Cancelado", "Seu produto está seguro :)", "error");
+			}
+		} catch (error) {
+			console.error("Erro ao excluir produto:", error.message);
+			Swal.fire("Erro", "Erro ao excluir produto", "error");
+		}
+	}
+
+
+	function encode(str) {
+		return str.replace(/[\u00A0-\u9999<>\&]/gim, function (i) {
+			return '&#' + i.charCodeAt(0) + ';';
+		});
 	}
 
 	listar();
+</script>
 
-	async function editarProduto(){
-		let id = document.getElementById("idAlimento").value;
-		let nome = document.getElementById("EditNome").value;
-		let quantidade = document.getElementById("EditQntAlimento").value;
-
-		if (!id) {
-			alert("O id é obrigatório");
-			return;
-		}
-
-		if (!nome) {
-			alert("O nome é obrigatório");
-			return;
-		}
-
-		if (!quantidade) {
-			alert("Quantidade é obrigatório");
-			return;
-		}
-
-		let dadosPenvio = {
-			id: id,
-			nome: nome,
-			quantidade: quantidade
-		};
-
-		let opcoes = {
-			method: "POST",
-			headers: {
-				"content-type": "application/json"
-			},
-			body: JSON.stringify(dadosPenvio)
-		};
-
-		try {
-			let response = await fetch("/editar", opcoes);
-
-			if (response.ok) {
-				await listar()
-				$("#modalEditar").modal("hide");
-			} else {
-				alert("Erro ao alterar o alimento");
-			}
-		} catch (ex) {
-			alert("Erro de rede: " + ex.message);
-		}
+<style>
+	.despensa {
+		border-radius: 10px;
+		padding-top: 10px;
+		margin-bottom: 10px;
+		border: 5px solid #004828;
+		background-color: #fdf7e1;
+		color: #004828;
 	}
+
+	.inserir {
+        align-items: center;
+        background-color: #604C4C;
+        padding: 20px;
+        border-radius: 10px;
+		background-image: url('https://www.transparenttextures.com/patterns/axiom-pattern.png');
+	}
+	.inserir label{
+		color: #FDF7E1; 
+		font-style: italic;
+		font-size: xx-large;
+	}
+
+	.desp {
+		background-color: #deb887;
+		padding: 20px;
+		border-radius: 10px;
+	}
+
+	.desp h1 {
+		text-align: center;
+		color: #004828;
+	}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+	AOS.init({
+		duration: 1200,
+	});
 </script>

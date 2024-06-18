@@ -123,7 +123,7 @@
 			//{ title: "Id", type: "num", data: "id" },
 			{ title: "Categoria", render: encode, data: "categoria" },
 			{ title: "Descrição",  render: function (value){
-				return `${encode(value)} <br> <a class="buttonAdd" href="/produtos?nome=${encodeURIComponent(value)}">Add</a>`;
+				return `${encode(value)} <br> <a class="buttonAdd my-5" href="/produtos?nome=${encodeURIComponent(value)}">Add</a>`;
 			}, data: "descricaoAlimento" },
 			{ title: "Energia (kcal)", type: "num", data: campoFloat("energiaKcal") },
 			{ title: "Proteína (g)", type: "num", data: campoFloat("proteina") },

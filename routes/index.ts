@@ -18,7 +18,7 @@ class IndexRoute {
 
 		let opcoes = {
 			titulo: "Produtos",
-			nome: nome
+			nome: nome.trim()
 		};
 
 		res.render("index/produtos", opcoes);
@@ -28,7 +28,7 @@ class IndexRoute {
 		let produtos: any[];
 
 		await app.sql.connect(async (sql) => {
-			produtos = await sql.query("select id, nome, quantidade FROM produtos order by nome asc");
+			produtos = await sql.query("select id, nome, quantidade, date_format(validade, '%d/%m/%Y') validade FROM produtos");
 		});
 
 		res.json(produtos);
@@ -56,7 +56,7 @@ class IndexRoute {
 		let produtos: any[];
 
 		await app.sql.connect(async (sql) => {
-			produtos = await sql.query("select id, nome, quantidade FROM produtos where id = ?", [id]);
+			produtos = await sql.query("select id, nome FROM produtos where id = ?", [id]);
 		});
 
 		res.json(produtos[0] || null);
@@ -78,8 +78,12 @@ class IndexRoute {
 			res.status(400).send("Quantidade do produto não informado");
 			return;
 		}
+		if (!produtos.validade) {
+			res.status(400).send("Validade do produto não informado");
+			return;
+		}
 		await app.sql.connect(async (sql) => {
-			await sql.query("INSERT INTO produtos (nome, quantidade) VALUES (?, ?)", [produtos.nome, produtos.quantidade]);
+			await sql.query("INSERT INTO produtos (nome, quantidade, validade) VALUES (?, ?, ?)", [produtos.nome, produtos.quantidade, produtos.validade]);
 		});
 		res.json(true);
 	}
@@ -111,11 +115,16 @@ class IndexRoute {
 			res.json("Quantidade do produto não informado");
 			return;
 		}
+		if (!produto.validade) {
+			res.status(400)
+			res.json("Validade do produto não informado");
+			return;
+		}
 
 		
 		let linhasAlteradas = 0;
 		await app.sql.connect(async (sql) => {
-			await sql.query("UPDATE produtos SET nome = ?, quantidade = ? WHERE id = ?", [produto.nome, produto.quantidade, produto.id]);
+			await sql.query("UPDATE produtos SET nome = ?, quantidade = ?, validade = ? WHERE id = ?", [produto.nome, produto.quantidade, produto.validade, produto.id]);
 			linhasAlteradas = sql.affectedRows;
 		});
 		if (!linhasAlteradas) {

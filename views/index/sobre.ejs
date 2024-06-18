@@ -1,49 +1,75 @@
-<div class="container-fluid mt-3">
-	<div class="row mt-4 photo">
-		<div class="col-md-3">
-			<div class="centro">
-				<img class="person" src="/public/img/Felipe.png">
-				<h3>Felipe Gudefin</h3>
-			</div>
+<div class="container-fluid mt-1" style="background-color: #604C4C; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+	<h1 style="text-align: center; color: #fdf7e1; padding-top: 15px;">Nossa historia</h1>
+	<div class="row py-5">
+		<div class="col-md-8 ml-5" style="text-align: justify; color: #fdf7e1;">
+			<p>A Diet Control nasceu da paixão de Paulo Cesar, um estudante de Sistemas de Informação da ESPM-SP, por
+				tecnologia e bem-estar. Inspirado por sua jornada pessoal de transformação através de uma alimentação
+				saudável e exercícios físicos, Paulo idealizou um aplicativo que facilitasse o controle da dieta e o
+				acompanhamento do progresso de cada indivíduo.
+			</p>
 			<p>
-				Felipe é um estudante de Sistemas de Informação na ESPM-SP apaixonado por Desenvolvimento em suas
-				diversas facetas.
-				Sua paixão por computadores começou cedo na vida e quer empreender em projetos que melhorem a qualidade
-				de vida das pessoas.
+				Junto a ele João Pedro Helbel, colega de faculdade que compartilhavam da mesma visão
+				e paixão pelo projeto. Após meses de trabalho árduo e dedicação, o aplicativo foi lançado em 2024,
+				rapidamente conquistando usuários em todo o Brasil.
 			</p>
-			<div class="row">
-				<a href="https://www.linkedin.com/in/felipe-masetti-gudefin-2a9926259/?originalSubdomain=br"><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
-				<a href="https://github.com/gudefin1"><img class="icone" src="/public/img/Git.svg" alt=""></a>
-				<a href=""><img class="icone" src="/public/img/Globo.svg" alt=""></a>
-			</div>
 		</div>
 		<div class="col-md-3">
-			<div class="centro">
-				<img class="person" src="/public/img/Joao.png" alt="">
-				<h3>João P Helbel</h3>
-			</div>
-			<p>Lorem ipsum dolor, sit amet Rerum adipisicing elit.
-				accusamus hic natuss Lorem, ipsum dolor sit amet
-			</p>
-			<div class="row">
-				<a href="https://www.linkedin.com/in/joaohelbel/"><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
-				<a href="https://github.com/joaohelbel"><img class="icone" src="/public/img/Git.svg" alt=""></a>
-				<a href="https://joaohelbel.github.io."><img class="icone" src="/public/img/Globo.svg" alt=""></a>
-			</div>
+			<img src="/public/img/logo1.png" alt="" style="max-width: 250px;">
 		</div>
-		<div class="col-md-3">
+	</div>
+</div>
+<div class="container-fluid" style="background-color: #fdf7e1;">
+	<div class="row py-5 photo">
+		<div class="col-md-6">
 			<div class="centro">
-				<img class="person" src="/public/img/Paulo.png" alt="">
-				<h3>Paulo Cesar</h3>
+				<div class="row">
+					<div class="col-md-4 pr-0 mr-0">
+						<img class="person" src="/public/img/Joao.png" alt="">
+						<div class="row">
+							<a href="https://www.linkedin.com/in/joaohelbel/"><img class="icone"
+									src="/public/img/Linkedin.svg" alt=""></a>
+							<a href="https://github.com/joaohelbel"><img class="icone" src="/public/img/Git.svg"
+									alt=""></a>
+							<a href="https://joaohelbel.github.io."><img class="icone" src="/public/img/Globo.svg"
+									alt=""></a>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<h3>João Pedro Helbel</h3>
+						<h6>CTO & Desenvolvedor</h6>
+						<p style="text-align: justify;">João Pedro Helbel é o CTO e Desenvolvedor do Diet Controller.
+							Estudante de Sistema de informação na ESPM, Com uma paixão por tecnologia,
+							João Pedro garante que nosso aplicativo seja robusto, seguro e fácil de usar.</p>
+					</div>
+				</div>
 			</div>
-			<p>Lorem ipsum dolor, sit amet Rerum adipisicing elit.
-				accusamus hic natuss Lorem, ipsum dolor sit amet
-			</p>
-			<div class="row">
-				<a href=""><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
-				<a href=""><img class="icone" src="/public/img/Git.svg" alt=""></a>
-				<a href=""><img class="icone" src="/public/img/Globo.svg" alt=""></a>
+
+		</div>
+		<div class="col-md-6">
+			<div class="centro">
+				<div class="row">
+					<div class="col-md-4 pr-0 mr-0">
+						<img class="person" src="/public/img/Paulo.png" alt="">
+						<div class="row">
+							<a href=""><img class="icone" src="/public/img/Linkedin.svg" alt=""></a>
+							<a href=""><img class="icone" src="/public/img/Git.svg" alt=""></a>
+							<a href=""><img class="icone" src="/public/img/Globo.svg" alt=""></a>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<h3>Paulo Cesar</h3>
+						<h6>CEO & Fundador</h6>
+						<p style=" text-align: justify;">
+							Paulo Cesar é o CEO e Fundador do Diet Controller. Estudante de
+							Sistema de informação na ESPM. Sua liderança e paixão pelo bem-estar são
+							fundamentais para o sucesso do Diet Controller, ajudando milhares de pessoas a atingir suas
+							metas.
+						</p>
+					</div>
+				</div>
 			</div>
+
+
 		</div>
 	</div>
 
@@ -52,20 +78,13 @@
 <%- contentFor("espaco-head") %>
 	<style>
 		.person {
-			border-radius: 50%;
-			width: 180px;
+			border-radius: 10px;
+			width: 200px;
 		}
 
 		.icone {
 			width: 24px;
 			height: 24px;
 			margin-left: 15px;
-		}
-		.centro {
-			text-align: center;
-		}
-
-		.photo {
-			justify-content: space-between;
 		}
 	</style>
